@@ -1,94 +1,134 @@
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
-import { Alert, Button, Stack, Divider, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar } from '@mui/material';
+import { Alert, Grid, Button, Stack, Divider, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { getDownloadURL, deleteObject, uploadBytes, ref } from 'firebase/storage'; // Corrected import
-import { storage, db } from './firebase'; // Import Firebase Storage and Firestore instances
+import { getDownloadURL, deleteObject, uploadBytes, ref, listAll } from 'firebase/storage';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { storage, db } from './firebase';
 import MediaCard from './MediaCard';
 
-const ImagesFolder = () => {
+function ImagesFolder() {
   const { id, Type } = useParams();
   const [imageUrls, setImageUrls] = useState([]);
+  const [imageNotFound, setImageNotFound] = useState(false);
   const [uploadAlertOpen, setUploadAlertOpen] = useState(false);
   const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [isUploadButtonClicked, setIsUploadButtonClicked] = useState(false);
 
   useEffect(() => {
-    // Construct the Firestore document path based on your structure
-    const docPath = `/${id}/${Type}/`;
-
-    // Fetch the image metadata from Firestore
-    const fetchImageMetadata = async () => {
-      try {
-        const snapshot = await db.collection(docPath).get();
-        const urls = [];
-        snapshot.forEach((doc) => {
-          urls.push(doc.data().imageUrl);
+    const storageRef = ref(storage, `houses/${id}/${Type}`);
+    const imageUrls = [];
+  
+    // List all items (images) in the storage reference
+    listAll(storageRef)
+      .then((res) => {
+        res.items.forEach(async (item) => {
+          try {
+            const url = await getDownloadURL(item);
+            imageUrls.push(url);
+            setImageUrls([...imageUrls]);
+          } catch (error) {
+            console.error('Error getting image URL:', error);
+          }
         });
-        setImageUrls(urls);
-      } catch (error) {
-        console.error('Error fetching image metadata:', error);
-      }
-    };
-
-    fetchImageMetadata();
+      })
+      .catch((error) => {
+        if (error.code === 'storage/object-not-found') {
+          setImageNotFound(true);
+        } else {
+          console.error('Error listing images:', error);
+        }
+      });
   }, [id, Type]);
-
+  
+  const fetchImageUrls = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'images'));
+      const urls = querySnapshot.docs.map((doc) => doc.data().imageUrl);
+      setImageUrls(urls);
+    } catch (error) {
+      console.error('Error fetching image URLs:', error);
+    }
+  };
+  
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
-    const uniqueId = new Date().getTime().toString(); // Generate a unique ID based on timestamp
+    if (!file) return;
+  
+    const uniqueId = new Date().getTime().toString();
     const storageRef = ref(storage, `houses/${id}/${Type}/${uniqueId}`);
-    const uploadTask = uploadBytes(storageRef, file);
-
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        // Monitor upload progress if needed
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log(`Upload is ${progress}% done`);
-      },
-      (error) => {
-        console.error('Error uploading image:', error);
-      },
-      async () => {
-        console.log('Image uploaded successfully');
-        setUploadAlertOpen(false); // Close upload dialog
-        setSnackbarMessage('Image uploaded successfully.');
-        setSnackbarOpen(true); // Show snackbar alert
-
-        // Save image metadata in Firestore (You can customize this based on your needs)
-        const imageMetadata = {
-          imageUrl: await getDownloadURL(storageRef), // Get the URL of the uploaded image
-          createdAt: new Date().toISOString(),
-        };
-
-        await db.collection('images').add(imageMetadata);
-
-        setImageUrl(imageMetadata.imageUrl);
+  
+    try {
+      const snapshot = await uploadBytes(storageRef, file);
+      console.log('Image uploaded successfully', snapshot);
+  
+      const imageUrl = await getDownloadURL(snapshot.ref);
+      const imageMetadata = {
+        imageUrl,
+        createdAt: new Date().toISOString(),
+      };
+  
+      if (isUploadButtonClicked) {
+        try {
+          const docRef = await addDoc(collection(db, 'images'), imageMetadata);
+          console.log('Image metadata added with ID: ', docRef.id);
+  
+          setImageUrls((prevUrls) => [...prevUrls, imageUrl]);
+  
+          setUploadAlertOpen(false);
+          setSnackbarMessage('Data inserted successfully.');
+          setSnackbarOpen(true);
+  
+          // Clear the input file selection after successful upload
+          event.target.value = null;
+  
+          // Refresh the component to reflect the new data
+          setIsUploadButtonClicked(false);
+          fetchImageUrls();
+        } catch (error) {
+          console.error('Error adding image metadata: ', error);
+        }
       }
-    );
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
   };
+  
 
+  
+  const handleUploadButtonClick = () => {
+    setIsUploadButtonClicked(true);
+    setUploadAlertOpen(true);
+  };
+  
+  
+  
   const handleImageDelete = async () => {
-    setDeleteAlertOpen(false); // Close delete confirmation dialog
+    setDeleteAlertOpen(false);
+
     const storageRef = ref(storage, `houses/${id}/${Type}`);
+    console.log('Deleting images at path:', storageRef.fullPath);
 
     try {
       await deleteObject(storageRef);
-      console.log('Image deleted successfully');
-      setImageUrl('');
-      setSnackbarMessage('Image deleted successfully.');
-      setSnackbarOpen(true); // Show snackbar alert
+      console.log('Images deleted successfully');
+      setImageUrls([]);
+      setSnackbarMessage('Images deleted successfully.');
+      setSnackbarOpen(true);
     } catch (error) {
-      console.error('Error deleting image:', error);
+      console.error('Error deleting images:', error);
     }
   };
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
+const handleSnackbarClose = () => {
+  setSnackbarOpen(false);
+};
+
+
 
   return (
     <>
@@ -98,35 +138,29 @@ const ImagesFolder = () => {
         </Alert>
         <Stack direction={'row'} spacing={2} sx={{ marginTop: 2 }}>
           <input type='file' accept='image/*' onChange={handleImageUpload} />
-          <Button variant='contained' size='small' onClick={handleImageUpload}>
-            Upload
-          </Button>
+          File ka lee open gareeso then refresh
+         
         </Stack>
         <Divider sx={{ marginY: 2 }} />
       </Box>
-  
-      {/* Display the list of MediaCard components */}
+
+      <Grid container spacing={2}>
       {imageUrls.length === 0 ? (
-        <Typography variant='body2' color='text.secondary' sx={{ marginTop: 2 }}>
+        <Typography variant="body2" color="text.secondary" sx={{ marginTop: 2 }}>
           No images found. Please upload images.
         </Typography>
       ) : (
         imageUrls.map((imageUrl, index) => (
-          <MediaCard
-            key={index} // Make sure to provide a unique key for each MediaCard
-            imageUrl={imageUrl}
-            handleImageDelete={() => setDeleteAlertOpen(true)}
-          />
+          <Grid key={index} item xs={12} sm={6} md={4}>
+            <MediaCard
+              imageUrl={imageUrl}
+              handleImageDelete={() => setDeleteAlertOpen(true)}
+            />
+          </Grid>
         ))
       )}
-  
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={4000}
-        onClose={handleSnackbarClose}
-        message={snackbarMessage}
-      />
-  
+    </Grid>
+
       <Dialog open={deleteAlertOpen} onClose={() => setDeleteAlertOpen(false)}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
@@ -139,11 +173,23 @@ const ImagesFolder = () => {
           <Button onClick={handleImageDelete} color='primary'>
             Delete
           </Button>
+
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+      />
     </>
   );
-  
 }
 
 export default ImagesFolder;
+
+
+ {/* <Button onClick={handleUploadButtonClick} color='primary'>
+        Upload Image
+          </Button> */}

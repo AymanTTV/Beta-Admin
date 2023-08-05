@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import { Dashboard } from './Dashboard/Dashboard';
-import Clients from './clients/clients'; // Update the import statement for Clients
+import Clients from './Clients/clients'; // Update the import statement for Clients
 import Services from './Services/services'; // Update the import statement for Services
 
 import XogtaShirkada from './XogtaShirkada/XogtaShirkada';

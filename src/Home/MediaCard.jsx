@@ -21,9 +21,8 @@ export default function MediaCard({ imageUrl, handleImageDelete }) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size='small' onClick={handleImageDelete}>
-          Delete
-        </Button>
+      <Button onClick={handleImageDelete}>Delete</Button>
+
       </CardActions>
     </Card>
   );
