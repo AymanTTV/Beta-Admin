@@ -13,7 +13,7 @@ import { Save as SaveIcon } from '@mui/icons-material';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-import { PermanentDrawerLeft } from '../Dashboard/PermanentDrawerLeft.jsx';
+// import { PermanentDrawerLeft } from '../Dashboard/PermanentDrawerLeft.jsx';
 import { GetAllAbout, AddAbout, UpdateAbout } from './apiCrud.jsx';
 
 export default function About() {
