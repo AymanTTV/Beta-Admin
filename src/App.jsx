@@ -25,8 +25,8 @@ function App() {
         <Route path="*" element={<NotFound />} />
 
         {isLogin && (
-          <Route path="dashboard/*" element={<Dashboard />}>
-            <Route path="/" element={<Home />} />
+          <Route path="dashboard" element={<Dashboard />}>
+            <Route path="Home" element={<Home />} />
             <Route path="images/:id/:Type" element={<ImagesFolder />} />
             <Route path="Services" element={<Services />} />
             <Route path="Clients" element={<Clients />} />

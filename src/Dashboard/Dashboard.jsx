@@ -24,6 +24,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HouseIcon from '@mui/icons-material/House';
 import Stack from '@mui/material/Stack';
+// import './SideBar';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
@@ -216,7 +217,7 @@ export default function Dashboard() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <h2> The Content place</h2>
+      
       </Box>
     </Box>
   );

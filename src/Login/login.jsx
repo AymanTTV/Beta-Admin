@@ -21,7 +21,7 @@ export default function Login() {
 
   const { mutateAsync, isError, isLoading, error } = useMutation({
     mutationFn: async (data) => {
-      return await axios.post('http://localhost:4000/login', data);
+      return await axios.post('https://betahouse-backend-livid.vercel.app/login', data);
     },
 
     onError: (er) => {

@@ -15,5 +15,9 @@ export default function NotFound(){
     if (isLogin) {
       return <Navigate to="/" />;
     }
-   
+   return(
+    <h2>
+      Page Not found
+    </h2>
+   )
 }

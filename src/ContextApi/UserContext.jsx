@@ -24,7 +24,7 @@ export const UserContextProvider = ({ children }) => {
     // Effect to check and set user status on component mount
     useEffect(() => {
         const token = jscookie.get('token');
-        console.log('Token:', token);
+        
 
         if (!token) {
             usenav('/');
