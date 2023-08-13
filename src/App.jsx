@@ -8,14 +8,23 @@ import Home from './Home/Home';
 import About from './About/About';
 import ImagesFolder from './Home/ImagesFolder'
 import Contact from './Contact/Contact'
-
-
+import Login from './Login/login';
+import NotFound from './NotFound/notFound';
+import { useUserContext } from './ContextApi/UserContext';
+import LogOut from './Login/logout';
 function App() {
+  const {isLogin} = useUserContext();
+  console.log(isLogin);
   return (
     <>
       <Routes>
-        <Route path="/" element={<Dashboard />}>
+
+        <Route path="/" element={<Login />} />
+        <Route path="/logout" element={<LogOut />} />
+        <Route path="*" element={<NotFound />} />
+        {isLogin && < Route path="dashboard" element={<Dashboard />}>
         <Route path="Home" element={<Home />} />
+        
         <Route path="images/:id/:Type" element={<ImagesFolder />} />
         <Route path="Services" element={<Services />} />
         <Route path="Clients" element={<Clients />} />
@@ -23,10 +32,11 @@ function App() {
         <Route path="XogtaShirkada" element={<XogtaShirkada />} />
         <Route path="contact" element={< Contact/>} />
 
-        </Route>
+        </Route> }
       </Routes>
     </>
   );
 }
 
 export default App;
+

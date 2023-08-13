@@ -6,10 +6,12 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
-
+// import { useUserContext } from '../ContextApi/UserContext.jsx';
+import LogoutIcon from '@mui/icons-material/Logout';
 export const Dashboard = () => {
+  
   const [drawerOpen, setDrawer] = useState(true); // Set 'drawerOpen' to true to have the menu open by default
-
+  // const {email} = useUserContext();
   const toggleDrawer = () => {
     setDrawer(!drawerOpen);
   };

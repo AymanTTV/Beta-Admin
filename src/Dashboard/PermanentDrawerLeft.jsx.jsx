@@ -26,12 +26,16 @@ import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import AddHomeWorkIcon from '@mui/icons-material/AddHomeWork';
 import { Info } from '@mui/icons-material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useUserContext } from '../ContextApi/UserContext';
 
 
 
 export const drawerWidth = 240;
 
 export const PermanentDrawerLeft = ({ drawerOpen, drawerClose }) => {
+  const { email, LogOut, isLogin } = useUserContext(); // Get user context data
+
   useEffect(() => {
     // Adjust the AppBar width when 'drawerOpen' state changes
     const appBar = document.getElementById('app-bar');
@@ -60,8 +64,13 @@ export const PermanentDrawerLeft = ({ drawerOpen, drawerClose }) => {
     </IconButton>
     {/* Display user's name */}
     <Typography variant="h6" sx={{ flexGrow: 1, textAlign: 'right' }}>
-      User: Aymanttv
-    </Typography>
+      User: {email}
+</Typography>
+    {isLogin && (
+            <IconButton onClick={LogOut} sx={{ p: 3 }}>
+              <LogoutIcon />
+            </IconButton>
+          )}
   </Toolbar>
 </AppBar>
 

@@ -8,7 +8,10 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { PermanentDrawerLeft } from './Dashboard/PermanentDrawerLeft.jsx'; // Update the import statement for PermanentDrawerLeft component
+import { PermanentDrawerLeft } from './Dashboard/PermanentDrawerLeft.jsx'; 
+// Update the import statement for PermanentDrawerLeft component
+
+import {UserContextProvider} from './ContextApi/UserContext'
 
 const queryClient = new QueryClient();
 
@@ -32,8 +35,11 @@ createRoot(document.getElementById('root')).render( // Update the method call to
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
         <BrowserRouter>
-          <PermanentDrawerLeft /> {/* Replace this line with the PermanentDrawerLeft component */}
+           {/* Replace this line with the PermanentDrawerLeft component */}
+          <UserContextProvider>
           <App />
+          </UserContextProvider>
+          
           <ToastContainer />
         </BrowserRouter>
       </ThemeProvider>
