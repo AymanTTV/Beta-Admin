@@ -30,12 +30,19 @@ export default function NotFound() {
       <Container maxWidth="md">
         <Grid container spacing={2}>
           <Grid xs={6}>
-            <Typography variant="h1">404</Typography>
+            <Typography variant="h1" sx={{color:'gray'}}>404</Typography>
             <Typography variant="h6">
               The page you’re looking for doesn't exist.
             </Typography>
             <Link to="/dashboard">
-              <Button variant="contained">Back Home</Button>
+              <Button variant="contained"
+              sx={{
+                backgroundColor: '#00df9a',
+                color: 'gray-300',
+                '&:hover': {
+                  backgroundColor: '#00a47b',
+                },
+              }}>Back Home</Button>
             </Link>
           </Grid>
           <Grid xs={6}>

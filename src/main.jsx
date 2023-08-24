@@ -17,12 +17,12 @@ const queryClient = new QueryClient();
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1e6084',
+      main: '#00df9a',
       dark: '#0f0f0f',
       light: '#b5b1b1',
     },
     error: {
-      main: '#E50F0C',
+      main: '#00df9a',
       warning: '#cf0c0c',
       dark: '#030202',
     },
