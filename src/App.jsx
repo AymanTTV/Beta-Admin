@@ -24,7 +24,7 @@ function App() {
         <Route path="/logout" element={<LogOut />} />
         <Route path="*" element={<NotFound />} />
 
-        {isLogin && (
+        
           <Route path="dashboard" element={<Dashboard />}>
             <Route path="Home" element={<Home />} />
             <Route path="images/:id/:Type" element={<ImagesFolder />} />
@@ -34,7 +34,7 @@ function App() {
             <Route path="XogtaShirkada" element={<XogtaShirkada />} />
             <Route path="contact" element={<Contact />} />
           </Route>
-        )}
+        
       </Routes>
     </>
   );

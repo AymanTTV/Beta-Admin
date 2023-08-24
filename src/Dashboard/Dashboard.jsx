@@ -167,7 +167,7 @@ export default function Dashboard() {
         </DrawerHeader>
         <Divider />
         <List>
-          <ListItemButton component={Link} to="/Home">
+          <ListItemButton component={Link} to="Home">
             <ListItemIcon>
               <DashboardIcon />
             </ListItemIcon>
@@ -180,31 +180,31 @@ export default function Dashboard() {
             </ListItemIcon>
             <ListItemText primary="Images" />
           </ListItemButton> */}
-          <ListItemButton component={Link} to="/Services">
+          <ListItemButton component={Link} to="Services">
             <ListItemIcon>
               <BuildIcon />
             </ListItemIcon>
             <ListItemText primary="Services" />
           </ListItemButton>
-          <ListItemButton component={Link} to="/Clients">
+          <ListItemButton component={Link} to="Clients">
             <ListItemIcon>
               <PeopleIcon />
             </ListItemIcon>
             <ListItemText primary="Clients" />
           </ListItemButton>
-          <ListItemButton component={Link} to="/About">
+          <ListItemButton component={Link} to="About">
             <ListItemIcon>
               <Info />
             </ListItemIcon>
             <ListItemText primary="About" />
           </ListItemButton>
-          <ListItemButton component={Link} to="/XogtaShirkada">
+          <ListItemButton component={Link} to="XogtaShirkada">
             <ListItemIcon>
               <Info />
             </ListItemIcon>
             <ListItemText primary="XogtaShirkada" />
           </ListItemButton>
-          <ListItemButton component={Link} to="/contact">
+          <ListItemButton component={Link} to="contact">
             <ListItemIcon>
               <PhoneIcon />
             </ListItemIcon>
@@ -217,7 +217,9 @@ export default function Dashboard() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-      
+        <Box>
+        <Outlet />
+        </Box>
       </Box>
     </Box>
   );

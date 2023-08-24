@@ -24,14 +24,14 @@ export const UserContextProvider = ({ children }) => {
     // Effect to check and set user status on component mount
     useEffect(() => {
         const token = jscookie.get('token');
-        
+        // console.log(token);
 
         if (!token) {
             usenav('/');
         } else {
             try {
                 const jwtdecoded = jwtDecode(token);
-                console.log('Decoded JWT:', jwtdecoded);
+                // console.log('Decoded JWT:', jwtdecoded);
                 setEmail(jwtdecoded.email);
                 setIsLogin(true);
             } catch (error) {
@@ -43,7 +43,7 @@ export const UserContextProvider = ({ children }) => {
 
     return (
         // Provide user-related data to components
-        <UserContextApi.Provider value={{ email, LogOut, isLogin, setIsLogin }}>
+        <UserContextApi.Provider value={{ email, LogOut, isLogin, setIsLogin, setEmail}}>
             {children}
         </UserContextApi.Provider>
     );

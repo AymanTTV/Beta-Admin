@@ -85,7 +85,7 @@ export default function Services() {
       setDeleteDialogOpen(false);
       queryClient.invalidateQueries('services');
     } catch (error) {
-      console.error('Error deleting service:', error);
+      console.error('Only for Admins', error);
     }
   };
 

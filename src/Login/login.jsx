@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../ContextApi/UserContext';
 
 export default function Login() {
+  
   const usenav = useNavigate();
   useEffect(() => {
     if (jscookie.get('token')) {
@@ -17,7 +18,7 @@ export default function Login() {
   }, []);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
-  const { isLogin, setIsLogin } = useUserContext(); // Correct import statement
+  const { isLogin, setIsLogin, setEmail } = useUserContext(); // Correct import statement
 
   const { mutateAsync, isError, isLoading, error } = useMutation({
     mutationFn: async (data) => {
@@ -31,9 +32,11 @@ export default function Login() {
 
   const Login = async (data) => {
     mutateAsync(data).then((res) => {
-      jscookie.set('token', res.data.AccessToken);
-
+      // jscookie.set('token', res.data.token);
+     
       if (res.status === 200) {
+        setEmail(res.data.email);
+        jscookie.set('token', res.data.token);
         setIsLogin(true);
         usenav('/dashboard');
       }
